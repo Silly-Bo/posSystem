@@ -2,7 +2,6 @@
   <div id="app">
 
          <leftNav></leftNav>
-          <!-- <Pos></Pos> -->
          <div class="main">
             <router-view></router-view>
          </div>

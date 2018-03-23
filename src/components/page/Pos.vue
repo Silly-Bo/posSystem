@@ -5,7 +5,7 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick" >
                         <el-tab-pane label="点餐" name="first">
                              <el-table :data="tableData" border style="width: 100%">
-                                    <el-table-column prop="name" label="商品名称"></el-table-column>
+                                    <el-table-column prop="goodsName" label="商品名称"></el-table-column>
                                     <el-table-column prop="count" label="数量"  width="50"> </el-table-column>
                                     <el-table-column prop="price" label="金额" width="60" ></el-table-column>
                                     <el-table-column prop="name" label="操作" width="100" fixed="right">
@@ -37,7 +37,7 @@
                           <div class="title">商品信息</div>
                       <div class="list">
                           <ul>
-                            <li v-for = "val in goods">
+                            <li v-for = "val in goods" @click="addfoods(val)">
                               <span>{{val.goodsName}}</span>
                               <span class="o-price">￥{{val.price}}元</span>
                             </li>
@@ -47,22 +47,40 @@
                     <div class="type_foods">
                   <el-tabs v-model="foodtypeName" @tab-click="handleClick" >
                       <el-tab-pane label="汉堡" name="first" >
-                              <ul class='cookList'>
-                                <li v-for = "item in typegoods">
+                            <ul class='cookList'>
+                                <li v-for = "item in typegoods[0]" @click="addfoods(item)">
                                     <span class="foodImg"><img :src="item.goodsImg" width="100%"></span>
                                     <span class="foodName">{{item.goodsName}}</span>
                                     <span class="foodPrice">￥{{item.price}}元</span>
                                 </li>
                             </ul>
                       </el-tab-pane>
-                      <el-tab-pane label="小食" name="second">2
-
+                      <el-tab-pane label="小食" name="second">
+                            <ul class='cookList'>
+                                <li v-for = "item in typegoods[1]" @click="addfoods(item)">
+                                    <span class="foodImg"><img :src="item.goodsImg" width="100%"></span>
+                                    <span class="foodName">{{item.goodsName}}</span>
+                                    <span class="foodPrice">￥{{item.price}}元</span>
+                                </li>
+                            </ul>
                       </el-tab-pane>
-                      <el-tab-pane label="饮料" name="third">3
-
+                      <el-tab-pane label="饮料" name="third">
+                            <ul class='cookList'>
+                                <li v-for = "item in typegoods[2]" @click="addfoods(item)">
+                                    <span class="foodImg"><img :src="item.goodsImg" width="100%"></span>
+                                    <span class="foodName">{{item.goodsName}}</span>
+                                    <span class="foodPrice">￥{{item.price}}元</span>
+                                </li>
+                            </ul>
                       </el-tab-pane>
-                       <el-tab-pane label="套餐" name="four">4
-
+                       <el-tab-pane label="套餐" name="four">
+                            <ul class='cookList'>
+                                <li v-for = "item in typegoods[3]" @click="addfoods(item)">
+                                    <span class="foodImg"><img :src="item.goodsImg" width="100%"></span>
+                                    <span class="foodName">{{item.goodsName}}</span>
+                                    <span class="foodPrice">￥{{item.price}}元</span>
+                                </li>
+                            </ul>
                       </el-tab-pane>
                   </el-tabs>
               </div>
@@ -75,143 +93,95 @@
 
 <script>
   window.onresize = function(){ //监听屏幕大小
-        document.getElementById('orderBox').style.height =document.body.clientHeight + 'px';
+        document.getElementById('orderBox').style.height =document.body.scrollHeight + 'px';
     }
+
+import axios from 'axios'
 export default {
   name: 'Pos',
   data () {
     return {
-         activeName: 'first',
-         foodtypeName:'first',
-       tableData: [
-        {
-          name: '可口可乐',
-          count: '1',
-          price: '10'
-        },
-        {
-          name: '可口可乐',
-          count: '1',
-          price: '10'
-        },
-        {
-          name: '可口可乐',
-          count: '1',
-          price: '10'
-        },
-        {
-          name: '可口可乐',
-          count: '1',
-          price: '10'
-        }
-        ],
-        goods:[
-          {
-              goodsId:1,
-              goodsName:'香辣鸡腿堡',
-              price:18
-          }, {
-              goodsId:2,
-              goodsName:'田园鸡腿堡',
-              price:15
-          }, {
-              goodsId:3,
-              goodsName:'和风汉堡',
-              price:15
-          }, {
-              goodsId:4,
-              goodsName:'快乐全家桶',
-              price:80
-          }, {
-              goodsId:5,
-              goodsName:'脆皮炸鸡腿',
-              price:10
-          }, {
-              goodsId:6,
-              goodsName:'魔法鸡块',
-              price:20
-          }, {
-              goodsId:7,
-              goodsName:'可乐大杯',
-              price:10
-          }, {
-              goodsId:8,
-              goodsName:'雪顶咖啡',
-              price:18
-          }, {
-              goodsId:9,
-              goodsName:'大块鸡米花',
-              price:15
-          }, {
-              goodsId:20,
-              goodsName:'香脆鸡柳',
-              price:17
-          }
-      ],
-       typegoods:[
-          {
-              goodsId:1,
-              goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos001.jpg",
-              goodsName:'香辣鸡腿堡',
-              price:18
-          }, {
-              goodsId:2,
-              goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos002.jpg",
-              goodsName:'田园鸡腿堡',
-              price:15
-          }, {
-              goodsId:3,
-              goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos004.jpg",
-              goodsName:'和风汉堡',
-              price:15
-          }, {
-              goodsId:4,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos003.jpg",
-              goodsName:'快乐全家桶',
-              price:80
-          }, {
-              goodsId:5,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos003.jpg",
-              goodsName:'脆皮炸鸡腿',
-              price:10
-          }, {
-              goodsId:6,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos004.jpg",
-              goodsName:'魔法鸡块',
-              price:20
-          }, {
-              goodsId:7,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos001.jpg",
-              goodsName:'可乐大杯',
-              price:10
-          }, {
-              goodsId:8,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos003.jpg",
-              goodsName:'雪顶咖啡',
-              price:18
-          }, {
-              goodsId:9,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos002.jpg",
-              goodsName:'大块鸡米花',
-              price:15
-          }, {
-              goodsId:20,
-               goodsImg:"http://7xjyw1.com1.z0.glb.clouddn.com/pos002.jpg",
-              goodsName:'香脆鸡柳',
-              price:17
-          }
-
-      ],
+        activeName: 'first',
+        foodtypeName:'first',
+        tableData: [], //左侧选择的食品
+        goods:[], //右侧上方商品信息
+        typegoods:[],//右侧下方商品信息
 
     }
   },
   mounted(){
-    document.getElementById('orderBox').style.height = document.body.clientHeight + 'px';
+    document.getElementById('orderBox').style.height = document.body.scrollHeight + 'px';
+ },
+ created(){
+      this.getgood();//右侧上方商品信息
+      this.gettypegood(); //食品种类
  },
  methods: {
+  //  选项卡切换
     handleClick(tab, event) {
         // console.log(tab, event);
       },
+
+    //点击添加
+    addfoods(val){
+      var _this = this;
+      var newdata={} //新的食品选择
+      // console.log('加=>'+val.goodsId+val.goodsName+val.price);
+      var ishave =  false;
+        //判断有没有选择
+      for(var i=0; i < _this.tableData.length; i++){
+         console.log(_this.tableData[i].goodsId);
+          if(_this.tableData[i].goodsId == val.goodsId){
+
+            ishave = true; //说明选择了
+
+          }
+       }
+       if(ishave){
+         //说明选择了
+        // var arr = this.tableData.filter(o =>o.goodsId == val.goodsId);
+        var arr = this.tableData.filter(
+            function(data){
+              console.log('data=>'+data)
+                  return data.goodsId == val.goodsId
+          });
+         arr[0].count++;
+
+        //  o(o.goodsId == val.goodsId)
+       }else{
+            //说明没有选择
+             newdata = {'goodsId':val.goodsId,'goodsName':val.goodsName,'price':val.price,'count':1}
+            _this.tableData.push(newdata)
+          }
+
+
+    },
+
+
+    // 获取到常用的食物列表
+    getgood(){
+        axios.get('http://jspang.com/DemoApi/oftenGoods.php')
+        .then(response=>{
+          console.log(response);
+          this.goods=response.data;
+        })
+        .catch(error=>{
+            console.log(error);
+            alert('网络错误，不能访问');
+        })
+    },
+    // 获取类型
+    gettypegood(){
+         axios.get('http://jspang.com/DemoApi/typeGoods.php')
+        .then(response=>{
+          console.log(response);
+          this.typegoods=response.data;
+        })
+        .catch(error=>{
+            console.log(error);
+            alert('网络错误，不能访问');
+        })
+    },
 
  }
 
@@ -241,6 +211,7 @@ export default {
   padding:10px;
   margin:5px;
   background-color:#fff;
+  cursor: pointer;
 }
 .o-price{
       color:#58B7FF;
@@ -258,6 +229,7 @@ export default {
        padding: 2px;
        float:left;
        margin: 2px;
+       cursor: pointer;
 
    }
    .cookList li span{
