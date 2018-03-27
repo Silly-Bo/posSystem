@@ -11,10 +11,14 @@
                                     <el-table-column prop="name" label="操作" width="100" fixed="right">
                                         <template slot-scope="scope">
                                               <el-button type="text" size="small">添加</el-button>
-                                              <el-button type="text" size="small">删除</el-button>
+                                              <el-button type="text" size="small" @click="delfoods(scope.row)">删除</el-button>
                                        </template>
                                     </el-table-column>
                               </el-table>
+                              <div>
+                                  <span class="mg20">总数：{{talcount}}</span>
+                                  <span  class="mg20">总价：{{talprice}}</span>
+                              </div>
                             <!--点餐  挂单  外卖-->
                             <div style="margin: 20px 0">
                                   <el-button type="warning">挂单</el-button>
@@ -106,6 +110,8 @@ export default {
         tableData: [], //左侧选择的食品
         goods:[], //右侧上方商品信息
         typegoods:[],//右侧下方商品信息
+        talcount:0,  //总数量
+        talprice : 0, //总价格
 
     }
   },
@@ -125,6 +131,8 @@ export default {
     //点击添加
     addfoods(val){
       var _this = this;
+      this.talcount=0; //汇总数量清0
+      this.talprice=0;
       var newdata={} //新的食品选择
       // console.log('加=>'+val.goodsId+val.goodsName+val.price);
       var ishave =  false;
@@ -142,7 +150,7 @@ export default {
         // var arr = this.tableData.filter(o =>o.goodsId == val.goodsId);
         var arr = this.tableData.filter(
             function(data){
-              console.log('data=>'+data)
+            //   console.log('data=>'+data)
                   return data.goodsId == val.goodsId
           });
          arr[0].count++;
@@ -153,20 +161,35 @@ export default {
              newdata = {'goodsId':val.goodsId,'goodsName':val.goodsName,'price':val.price,'count':1}
             _this.tableData.push(newdata)
           }
+        // 计算价格  数量  汇总
+        this.tableData.forEach(element => {
+            this.talcount +=element.count;
+            console.log( '数量'+this.talcount)
+
+            this.talprice= this.talprice +(element.count*element.price)
+            console.log( '钱'+this.talprice)
+        });
+
+
 
 
     },
+    //删除商品
+    delfoods(val){
+
+    this.tableData = this.tableData.filter(m => m.goodsId != val.goodsId);       
+       
+
+        },
 
 
     // 获取到常用的食物列表
     getgood(){
         axios.get('http://jspang.com/DemoApi/oftenGoods.php')
         .then(response=>{
-          console.log(response);
           this.goods=response.data;
         })
         .catch(error=>{
-            console.log(error);
             alert('网络错误，不能访问');
         })
     },
@@ -174,11 +197,9 @@ export default {
     gettypegood(){
          axios.get('http://jspang.com/DemoApi/typeGoods.php')
         .then(response=>{
-          console.log(response);
           this.typegoods=response.data;
         })
         .catch(error=>{
-            console.log(error);
             alert('网络错误，不能访问');
         })
     },
@@ -188,6 +209,9 @@ export default {
 }
 </script>
 <style scoped>
+    .mg20{
+    margin: 20px;
+    }
   .pos_left{
       height: 100%;
       background-color: #F9FAFC;
